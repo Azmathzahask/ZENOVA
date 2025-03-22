@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Study Room</title>
+    <link rel="stylesheet" href="pdf.css">
+    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+</head>
+<body>
+
+    <div id="drop-area">
+        <h2>Drag & Drop Your Study Material Here</h2>
+        <p>(Screen will go fullscreen & timer will start)</p>
+    </div>
+
+    <div id="timer"></div>
+
+    <!-- PDF Viewer -->
+    <div id="pdf-container">
+        <div id="pdf-controls">
+            <button id="prev-page">❮</button>
+            <span id="page-info"></span>
+            <button id="next-page">❯</button>
+        </div>
+        <canvas id="pdf-render"></canvas>
+    </div>
+
+    <!-- ChatGPT Button with Warning -->
+    <button id="open-chatgpt" onmouseover="showWarning()" onmouseout="hideWarning()">🔍 Search in ChatGPT</button>
+    <p id="fullscreen-warning">⚠️ Exiting fullscreen mode is required to use ChatGPT.</p>
+
+    <!-- Back to PDF Button -->
+    <button id="back-to-pdf" onclick="document.documentElement.requestFullscreen()">Back to PDF</button>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="pdf.js"></script>
+</body>
+</html>

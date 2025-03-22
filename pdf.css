@@ -1,0 +1,61 @@
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2; /* Light pastel gray */
+    color: #4d4d4d; /* Soft dark gray */
+}
+
+/* Drag & Drop Area */
+#drop-area {
+    width: 50%;
+    margin: 50px auto;
+    padding: 40px;
+    border: 2px dashed #d3d3d3; /* Pastel light gray */
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* Timer */
+#timer {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* PDF Viewer */
+#pdf-container {
+    display: none;
+    margin-top: 20px;
+}
+
+canvas {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    display: block;
+    border: 1px solid #d3d3d3; /* Pastel light gray */
+}
+
+/* PDF Controls */
+#pdf-controls {
+    margin: 10px 0;
+}
+
+button {
+    background: #ffd9b3; /* Pastel orange */
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* ChatGPT Warning */
+#fullscreen-warning {
+    display: none;
+    color: #ff9999; /* Pastel red */
+    font-size: 14px;
+    margin-top: 5px;
+}

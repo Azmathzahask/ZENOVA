@@ -1,0 +1,168 @@
+/* General Page Styling */
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #f1c6c6, #d1c6f0, #c8e6c9, #fff5b7); /* Pastel gradient */
+    background-size: 400% 400%;
+    animation: gradientBG 10s ease infinite;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #333; /* Darker font color for better contrast */
+}
+
+/* Gradient Animation */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Title Styling */
+h1 {
+    margin-bottom: 20px;
+    color: #4e4e4e; /* Darker gray to ensure readability */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    font-size: 2em;
+}
+
+/* Task Input Section */
+.task-input {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+input, select, button {
+    padding: 12px;
+    margin: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+    background-color: #f9f9f9; /* Soft pastel background for inputs and buttons */
+    color: #333; /* Dark text for readability */
+}
+
+/* Button Styling */
+button {
+    background-color: #a6d1e6; /* Light pastel blue */
+    color: #333; /* Dark text color */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+button:hover {
+    background-color: #8ac2d8; /* Slightly darker pastel blue */
+    transform: scale(1.05);
+}
+
+/* Kanban Board Layout */
+.kanban-board {
+    display: flex;
+    flex-wrap: nowrap;  /* Prevent wrapping of columns */
+    justify-content: space-evenly; /* Distribute columns evenly */
+    gap: 20px;
+    padding: 20px;
+    width: 90%;
+    max-width: 1200px;
+}
+
+/* Column Styling */
+.column {
+    width: 250px;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    min-height: 300px;
+    transition: transform 0.3s ease;
+    color: #333; /* Dark text for readability */
+}
+
+/* Column Hover Effect */
+.column:hover {
+    transform: scale(1.05);
+}
+
+/* Task Container */
+.task-container {
+    min-height: 200px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Column Colors - Pastel-themed */
+#top-priority { background: linear-gradient(135deg, #f6b7b7, #f1d0d0); border: 2px solid #f28a8a; color: #4e4e4e;} /* Pastel red */
+#important { background: linear-gradient(135deg, #d1b9f9, #c6a8f1); border: 2px solid #a8a9f9; color: #4e4e4e;} /* Pastel purple */
+#optional { background: linear-gradient(135deg, #c8e6c9, #b7e2d6); border: 2px solid #a8d6b6; color: #4e4e4e;} /* Pastel green */
+#completed { background: linear-gradient(135deg, #fff5b7, #f9f0c9); border: 2px solid #f9e079; color: #4e4e4e;} /* Pastel yellow */
+
+/* Task Styling */
+.task {
+    background-color: #ffffff; /* White background for task cards */
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.2s ease;
+    color: #333; /* Dark text for readability */
+}
+
+.task:hover {
+    transform: scale(1.02);
+}
+
+/* Checkbox Styling */
+.task-checkbox {
+    margin-right: 10px;
+}
+
+/* Delete Button Styling */
+.delete-task-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #f28a8a; /* Pastel red for delete */
+    transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.delete-task-btn:hover {
+    color: darkred;
+    transform: scale(1.2);
+}
+
+/* Connection Requests Section */
+.connection-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.5); /* Transparent white background */
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.connection-section h2 {
+    color: #4e4e4e; /* Darker text color for better readability */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .kanban-board {
+        flex-direction: column;  /* Stack the columns on small screens */
+        align-items: center;
+    }
+
+    .column {
+        width: 90%;
+    }
+}

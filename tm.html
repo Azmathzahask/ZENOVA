@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Study Room with Breaks</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: #f0e6ef; /* Pastel Lavender */
+            color: #4a4a4a; /* Dark Gray Pastel */
+        }
+
+        /* Drag & Drop Area */
+        #drop-area {
+            width: 50%;
+            margin: 50px auto;
+            padding: 40px;
+            border: 2px dashed rgba(74, 74, 74, 0.3); /* Dark Gray Pastel */
+            border-radius: 12px;
+            cursor: pointer;
+            background: rgba(245, 245, 245, 0.3); /* Light gray with transparency */
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 16px rgba(74, 74, 74, 0.1);  /* Dark Gray Pastel */
+            transition: all 0.4s ease;
+        }
+
+        #drop-area:hover {
+            border-color: #ffb3ba; /* Pastel Coral */
+            background: rgba(245, 245, 245, 0.5);  /* Light gray with more transparency */
+            transform: scale(1.02);
+        }
+
+        /* Timer */
+        #timer {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 20px;
+            color: #ffb3ba; /* Pastel Coral */
+            text-shadow: 0 0 10px rgba(255, 179, 186, 0.6); /* Pastel Coral */
+        }
+
+        /* PDF Viewer */
+        #pdf-container {
+            display: none;
+            margin-top: 20px;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* PDF Controls */
+        #pdf-controls {
+            margin: 15px 0;
+        }
+
+        /* Buttons and Inputs */
+        button, input {
+            background: linear-gradient(135deg, #ffb3ba, #ff8ea1); /* Pastel Pink */
+            border: none;
+            padding: 12px 18px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 8px;
+            border-radius: 10px;
+            transition: all 0.4s ease;
+            color: #4a4a4a; /* Added to ensure text contrast */
+        }
+
+        /* Breathing Animation Box */
+        #breathing-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(230, 243, 255, 0.9); /* Light Blue Pastel */
+            color: #4a4a4a; /* Dark Gray Pastel */
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+        }
+
+        /* Animation Circle */
+        .circle {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #b2dfdb, #80cbc4); /* Pastel Teal */
+            border-radius: 50%;
+            animation: breathCycle 8s infinite;
+        }
+
+        @keyframes breathCycle {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(1); }
+        }
+
+        /* Show Breathing Box */
+        .show {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Drag and Drop Area -->
+    <div id="drop-area">
+        <h2>Drag & Drop Your Study Material Here</h2>
+        <p>(Screen will go fullscreen & timer will start)</p>
+    </div>
+
+    <!-- Timer Inputs -->
+    <input type="number" id="session-duration" placeholder="Session duration (mins)">
+    <input type="number" id="break-interval" placeholder="Break interval (mins)">
+    <input type="number" id="break-duration" placeholder="Break duration (mins)">
+
+    <!-- Timer Display -->
+    <div id="timer"></div>
+
+    <!-- PDF Viewer -->
+    <div id="pdf-container">
+        <div id="pdf-controls">
+            <button id="prev-page">❮</button>
+            <span id="page-info"></span>
+            <button id="next-page">❯</button>
+        </div>
+        <canvas id="pdf-render"></canvas>
+    </div>
+
+    <!-- ChatGPT Button -->
+    <button id="open-chatgpt">🔍 Search in ChatGPT</button>
+
+    <!-- Back to PDF Button -->
+    <button id="back-to-pdf" onclick="document.documentElement.requestFullscreen()">Back to PDF</button>
+
+    <!-- Breathing Animation Box -->
+    <div id="breathing-box" class="hidden">
+        <h2>Take a Deep Breath...</h2>
+        <div class="circle"></div>
+        <p id="breathing-instruction">Inhale</p>
+    </div>
+
+    <script>
+        let timer;
+        let timeLeft;
+        let isBreak = false;
+        let sessionDuration;
+        let breakInterval;
+        let breakDuration;
+        let pdfDoc = null,
+            pageNum = 1,
+            pageRendering = false,
+            pageNumPending = null,
+            scale = 1.5;
+
+        function startTimer() {
+            sessionDuration = parseInt(document.getElementById('session-duration').value) * 60;
+            breakInterval = parseInt(document.getElementById('break-interval').value) * 60;
+            breakDuration = parseInt(document.getElementById('break-duration').value) * 60;
+            
+            timeLeft = sessionDuration;
+            updateTimer();
+            timer = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+                // Check if it's time for a break
+                if (!isBreak && timeLeft % breakInterval === 0) {
+                    isBreak = true;
+                    showBreathingBox();
+                    timeLeft = breakDuration;
+                }
+            } else {
+                if (isBreak) {
+                    // Break is over, resume studying
+                    isBreak = false;
+                    hideBreathingBox();
+                    timeLeft = breakInterval; // Reset to next break interval
+                } else {
+                    // Study session is complete
+                    clearInterval(timer);
+                    document.getElementById('timer').textContent = "Time's up!";
+                }
+            }
+        }
+
+        function showBreathingBox() {
+            document.getElementById('breathing-box').classList.add('show');
+        }
+
+        function hideBreathingBox() {
+            document.getElementById('breathing-box').classList.remove('show');
+        }
+
+        function handleFiles(files) {
+            const file = files[0];
+            if (file.type !== 'application/pdf') {
+                alert('Please upload a PDF file.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const typedarray = new Uint8Array(e.target.result);
+
+                pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+                    pdfDoc = pdf;
+                    document.getElementById('page-info').textContent = `Page ${pageNum} of ${pdf.numPages}`;
+                    renderPage(pageNum);
+                    document.getElementById('pdf-container').style.display = 'flex';
+                    startTimer();
+                    document.documentElement.requestFullscreen();
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function renderPage(num) {
+            pageRendering = true;
+            pdfDoc.getPage(num).then(function(page) {
+                var viewport = page.getViewport({scale: scale});
+                var canvas = document.getElementById('pdf-render');
+                var ctx = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                var renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                var renderTask = page.render(renderContext);
+
+                renderTask.promise.then(function() {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+
+            document.getElementById('page-info').textContent = `Page ${num} of ${pdfDoc.numPages}`;
+        }
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        function onPrevPage() {
+            if (pageNum <= 1) {
+                return;
+            }
+            pageNum--;
+            queueRenderPage(pageNum);
+        }
+
+        function onNextPage() {
+            if (pageNum >= pdfDoc.numPages) {
+                return;
+            }
+            pageNum++;
+            queueRenderPage(pageNum);
+        }
+
+        document.getElementById('prev-page').addEventListener('click', onPrevPage);
+        document.getElementById('next-page').addEventListener('click', onNextPage);
+
+        // Drag and drop functionality
+        const dropArea = document.getElementById('drop-area');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            dropArea.classList.add('highlight');
+        }
+
+        function unhighlight(e) {
+            dropArea.classList.remove('highlight');
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            handleFiles(files);
+        }
+
+        // ChatGPT functionality (placeholder)
+        document.getElementById('open-chatgpt').addEventListener('click', function() {
+            // Here you would typically open ChatGPT or perform a search
+            alert('ChatGPT search functionality would be implemented here.');
+        });
+    </script>
+</body>
+</html>

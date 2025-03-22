@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - ZENOVA</title>
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+    <!-- Zenova Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap" />
+
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            margin: 0;
+            background-image: url("https://w0.peakpx.com/wallpaper/318/738/HD-wallpaper-anime-room-and-background-anime-girl-studying.jpg");
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .sign-up-card {
+            border-radius: 1rem;
+            padding: 2rem;
+            width: 500px; /* Increased width */
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-label {
+            font-weight: bold;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .input-box {
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            color: #000;
+        }
+        .bottom-link {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="flex justify-between items-center h-screen px-20">
+
+        <div class="w-1/2 text-left">
+            <h1 class="text-4xl font-bold text-white mb-4">Join ZENOVA</h1>
+            <p class="text-white text-lg mb-8">Create your account and start your journey with us today.</p>
+        </div>
+
+        <div class="sign-up-card w-1/2">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800">Sign Up</h2>
+            <form class="flex flex-col gap-4">
+                <div>
+                    <label for="name" class="input-label">Full Name</label>
+                    <input type="text" id="name" name="name" class="input-box w-full text-black" required />
+                </div>
+                <div>
+                    <label for="email" class="input-label">Email Address</label>
+                    <input type="email" id="email" name="email" class="input-box w-full text-black" required />
+                </div>
+                <div>
+                    <label for="password" class="input-label">Password</label>
+                    <input type="password" id="password" name="password" class="input-box w-full text-black" required />
+                </div>
+                <div>
+                    <label for="confirmPassword" class="input-label">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="input-box w-full text-black" required />
+                </div>
+
+                <div class="flex items-center mb-4">
+                    <input type="checkbox" id="agreeTerms" name="agreeTerms" class="mr-2" required />
+                    <label for="agreeTerms" class="text-gray-700 text-sm">I agree to the Terms and Conditions</label>
+                </div>
+
+                <button id="signUpButton" class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300" type="button">
+                    Create Account
+                </button>
+            </form>
+            <div class="bottom-link mt-4">
+                 <span class="text-gray-700 text-sm">Already have an account?</span>
+                 <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="c:\Users\User\vision_app\zenova\sign in new.html">
+                   Sign In
+                 </a>
+            </div>
+            <script>
+                document.getElementById('signUpButton').addEventListener('click', function() {
+                    const nameInput = document.getElementById('name');
+                    const emailInput = document.getElementById('email');
+                    const passwordInput = document.getElementById('password');
+                    const confirmPasswordInput = document.getElementById('confirmPassword');
+                    const agreeTermsCheckbox = document.getElementById('agreeTerms');
+            
+                    if (nameInput.value.trim() === '' || emailInput.value.trim() === '' || 
+                        passwordInput.value.trim() === '' || confirmPasswordInput.value.trim() === '') {
+                        alert('Please fill in all fields.');
+                    } else if (passwordInput.value !== confirmPasswordInput.value) {
+                        alert('Passwords do not match.');
+                    } else if (!agreeTermsCheckbox.checked) {
+                        alert('Please agree to the Terms and Conditions.');
+                    } else {
+                        window.location.href = 'c:\\Users\\User\\vision_app\\zenova\\sign in new.html';
+                    }
+                });
+            </script>
+        </div>
+    </div>
+</body>
+
+</html>
